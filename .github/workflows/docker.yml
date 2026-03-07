@@ -9,11 +9,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
+      - name: 1 Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
+      - name: 2 Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+<<<<<<< HEAD
       - name: Build Docker image
         run: docker build -t devops-api -f docker/Dockerfile .
+=======
+      - name: 3 Build Docker image
+        run: docker build -t devops-api -f docker/Dockerfile .
+
+      - name: 4 Test docker image
+        run: docker images
+>>>>>>> 47792fd (Add GitHub Actions CI)
