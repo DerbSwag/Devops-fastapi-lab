@@ -1,4 +1,7 @@
-venv
-__pycache__
-*.pyc
 .git
+.gitignore
+README.md
+monitoring
+compose
+scripts
+k8s
