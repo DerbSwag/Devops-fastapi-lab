@@ -49,6 +49,7 @@ jobs:
           cd ~/my-api
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker pull ghcr.io/derbswag/devops-api:latest
-          docker-compose -f compose/app.yml down
+          docker stop my-api_api_1 || true
+          docker rm my-api_api_1 || true
           docker-compose -f compose/app.yml up -d
           docker image prune -f
