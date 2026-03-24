@@ -4,4 +4,4 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return {"message": "DevOps Lab Running"}
+    return {"message": "DevOps Lab v2 - CD Pipeline Works!"}
