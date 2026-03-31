@@ -44,6 +44,11 @@ spec:
             - name: http
               containerPort: {{ 8000 }}
               protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: fastapi-config
+            - secretRef:
+                name: fastapi-secret
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
