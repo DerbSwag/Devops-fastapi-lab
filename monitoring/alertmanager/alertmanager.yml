@@ -1,0 +1,22 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname', 'severity']
+  group_wait: 10s
+  group_interval: 5m
+  repeat_interval: 12h
+  receiver: discord
+
+receivers:
+  - name: discord
+    discord_configs:
+      - webhook_url: 'https://discord.com/api/webhooks/1486740524626083870/2N5NGgZWVCjVa-jVPDoV4wdBglFH8SdP58lVe-UBqAnToU4IKsn-fWs3gM3TcNjS4vpg'
+        title: '{{ if eq .Status "firing" }}🔥 ALERT{{ else }}✅ RESOLVED{{ end }}: {{ .CommonLabels.alertname }}'
+        message: |
+          **Severity:** {{ .CommonLabels.severity }}
+          **Status:** {{ .Status }}
+          {{ range .Alerts }}
+          **Summary:** {{ .Annotations.summary }}
+          **Description:** {{ .Annotations.description }}
+          {{ end }}

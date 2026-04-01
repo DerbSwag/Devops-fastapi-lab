@@ -1,0 +1,6 @@
+apiVersion: v2
+name: fastapi
+description: FastAPI DevOps Lab - Helm Chart
+type: application
+version: 0.1.0
+appVersion: "2.0.0"

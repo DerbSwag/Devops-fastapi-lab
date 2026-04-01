@@ -1,0 +1,8 @@
+1. Get the application URL by running:
+   kubectl get ingress fastapi
+
+2. Add to /etc/hosts:
+   <INGRESS_IP>  fastapi.local
+
+3. Access the API:
+   curl http://fastapi.local
