@@ -4,3 +4,7 @@ __pycache__/
 venv/
 node_modules/
 *.log
+
+# Never commit real secrets
+**/secret-real.yaml
+*.env

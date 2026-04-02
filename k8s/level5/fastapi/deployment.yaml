@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi
+  namespace: level5
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      serviceAccountName: fastapi-sa   # RBAC — จะสร้าง Step 8
+      containers:
+      - name: fastapi
+        image: ghcr.io/derbswag/devops-api:latest
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: fastapi-config      # โหลด config ทั้งหมด
+        env:
+        - name: DB_USER               # โหลด secret ทีละตัว
+          valueFrom:
+            secretKeyRef:
+              name: fastapi-secret
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fastapi-secret
+              key: DB_PASSWORD
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: fastapi-secret
+              key: SECRET_KEY
