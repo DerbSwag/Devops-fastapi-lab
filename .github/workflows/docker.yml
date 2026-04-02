@@ -46,7 +46,7 @@ jobs:
     steps:
       - name: Deploy
         run: |
-          cd ~/my-api
+          cd ~/Devops-fastapi-lab
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker pull ghcr.io/derbswag/devops-api:latest
           docker stop compose_api_1 2>/dev/null || true
