@@ -1,0 +1,36 @@
+replicaCount: 2
+
+image:
+  repository: ghcr.io/derbswag/devops-api
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 8000
+  nodePort: 32011
+
+env:
+  APP_ENV: "production"
+  LOG_LEVEL: "warning"
+  DB_HOST: "postgres-service"
+  DB_NAME: "appdb"
+
+resources:
+  requests:
+    cpu: "200m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+autoscaling:
+  enabled: false
+
+ingress:
+  enabled: true
+  hosts:
+    - host: prod-api.devopslab.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
