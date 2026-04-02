@@ -259,3 +259,79 @@ Password: admin
 ## License
 
 MIT License
+
+---
+
+## Level 6 — Ingress + TLS
+
+Nginx Ingress Controller + cert-manager สำหรับ domain-based routing และ HTTPS
+
+| Domain | Service |
+|---|---|
+| fastapi.lab | FastAPI App (HTTPS) |
+| grafana.lab | Grafana Dashboard |
+| prometheus.lab | Prometheus |
+| alertmanager.lab | Alertmanager |
+```bash
+# Install Nginx Ingress
+helm install ingress-nginx ingress-nginx/ingress-nginx \
+  --namespace ingress-nginx --create-namespace \
+  --set controller.service.type=NodePort \
+  --set controller.service.nodePorts.http=30080 \
+  --set controller.service.nodePorts.https=30443
+
+# Install cert-manager
+helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager --create-namespace \
+  --set crds.enabled=true
+```
+
+## Level 7 — HPA (Horizontal Pod Autoscaler)
+
+Auto-scaling FastAPI pods ตาม CPU load
+
+| Setting | Value |
+|---|---|
+| Min Pods | 1 |
+| Max Pods | 10 |
+| CPU Threshold | 50% |
+
+Result: CPU spike 199% → scale จาก 1 → 6 pods อัตโนมัติ
+
+---
+
+## Level 6 — Ingress + TLS
+
+Nginx Ingress Controller + cert-manager สำหรับ domain-based routing และ HTTPS
+
+| Domain | Service |
+|---|---|
+| fastapi.lab | FastAPI App (HTTPS) |
+| grafana.lab | Grafana Dashboard |
+| prometheus.lab | Prometheus |
+| alertmanager.lab | Alertmanager |
+```bash
+# Install Nginx Ingress
+helm install ingress-nginx ingress-nginx/ingress-nginx \
+  --namespace ingress-nginx --create-namespace \
+  --set controller.service.type=NodePort \
+  --set controller.service.nodePorts.http=30080 \
+  --set controller.service.nodePorts.https=30443
+
+# Install cert-manager
+helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager --create-namespace \
+  --set crds.enabled=true
+```
+
+## Level 7 — HPA (Horizontal Pod Autoscaler)
+
+Auto-scaling FastAPI pods ตาม CPU load
+
+| Setting | Value |
+|---|---|
+| Min Pods | 1 |
+| Max Pods | 10 |
+| CPU Threshold | 50% |
+
+Result: CPU spike 199% → scale จาก 1 → 6 pods อัตโนมัติ
