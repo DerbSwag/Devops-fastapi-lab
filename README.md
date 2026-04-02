@@ -335,3 +335,30 @@ Auto-scaling FastAPI pods ตาม CPU load
 | CPU Threshold | 50% |
 
 Result: CPU spike 199% → scale จาก 1 → 6 pods อัตโนมัติ
+
+---
+## 🚀 Level 6 — Ingress & TLS (Production Routing)
+จัดการ Traffic ผ่าน Single Entry Point ด้วย Nginx Ingress Controller และระบบออกใบเซอร์อัตโนมัติ
+
+### 🌐 Domains Configured:
+- `fastapi.lab` -> FastAPI Application (HTTPS Enabled)
+- `grafana.lab` -> Monitoring Dashboard
+- `prometheus.lab` -> Time-series Database
+
+### 🛠️ Tech Stack:
+- **Ingress Controller:** Nginx
+- **Cert-Manager:** Self-signed ClusterIssuer
+- **Protocols:** HTTP (30080), HTTPS (30443)
+
+---
+## 📈 Level 7 — HPA (Horizontal Pod Autoscaler)
+ระบบขยายตัวอัตโนมัติเมื่อเกิด Load สูง (High Availability)
+
+### ⚙️ HPA Configuration:
+- **Min Replicas:** 1
+- **Max Replicas:** 10
+- **Target CPU:** 50%
+
+### 🧪 Stress Test Result:
+- **Load Applied:** 199% CPU Usage via `load-generator`
+- **Result:** Kubernetes สั่ง Scale-out จาก 1 Pod เป็น **6 Pods** ทันทีเพื่อรับโหลด
