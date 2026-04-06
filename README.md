@@ -1,7 +1,12 @@
-Readme · MDCopyDevOps FastAPI Lab 🚀
+# DevOps FastAPI Lab 🚀
+
 A production-style DevOps lab using FastAPI, Docker, Kubernetes, and a full monitoring stack with automated CI/CD pipeline and GitOps.
 
-Architecture
+---
+
+## Architecture
+
+```
 git push
     │
     ▼
@@ -32,11 +37,31 @@ GitHub Actions (CI)
           ├── NetworkPolicy             ← Level 4
           ├── HPA (Auto-scaling)        ← Level 4
           └── ArgoCD
+```
 
-Tech Stack
-CategoryToolsApplicationFastAPI, PythonContainerizationDocker, Docker ComposeContainer RegistryGitHub Container Registry (GHCR)OrchestrationKubernetes (k3s), HelmGitOpsArgoCDIngressNginx Ingress ControllerReverse ProxyNginx, TraefikMonitoringPrometheus, Grafana, Node Exporter, cAdvisorAlertingAlertmanager → DiscordCI/CDGitHub Actions + Self-hosted RunnerVersion ControlGit, GitHub
+---
 
-Project Structure
+## Tech Stack
+
+| Category | Tools |
+|----------|-------|
+| Application | FastAPI, Python |
+| Containerization | Docker, Docker Compose |
+| Container Registry | GitHub Container Registry (GHCR) |
+| Orchestration | Kubernetes (k3s), Helm |
+| GitOps | ArgoCD |
+| Ingress | Nginx Ingress Controller |
+| Reverse Proxy | Nginx, Traefik |
+| Monitoring | Prometheus, Grafana, Node Exporter, cAdvisor |
+| Alerting | Alertmanager → Discord |
+| CI/CD | GitHub Actions + Self-hosted Runner |
+| Version Control | Git, GitHub |
+
+---
+
+## Project Structure
+
+```
 .
 ├── app/                    # FastAPI application
 │   ├── main.py
@@ -76,102 +101,148 @@ Project Structure
 │   └── deploy.sh
 └── .github/workflows/
     └── docker.yml
+```
 
-Prerequisites
+---
+
+## Prerequisites
+
 Before getting started, ensure the following are installed:
 
-Docker + Docker Compose
-kubectl
-k3s (single-node Kubernetes)
-Helm 3
-ArgoCD CLI (optional)
+- Docker + Docker Compose
+- kubectl
+- k3s (single-node Kubernetes)
+- Helm 3
+- ArgoCD CLI (optional)
 
+---
 
-Learning Roadmap
-✅ Level 1 — Docker & CI/CD
+## Learning Roadmap
 
-FastAPI containerized with Docker
-Docker Compose for multi-service stack
-GitHub Actions CI/CD pipeline
-Auto-deploy via self-hosted runner
-Image pushed to GHCR
+### ✅ Level 1 — Docker & CI/CD
+- FastAPI containerized with Docker
+- Docker Compose for multi-service stack
+- GitHub Actions CI/CD pipeline
+- Auto-deploy via self-hosted runner
+- Image pushed to GHCR
 
-✅ Level 2 — Kubernetes & Helm
+### ✅ Level 2 — Kubernetes & Helm
+- k3s single-node cluster setup
+- FastAPI deployed via Helm chart
+- ConfigMap & Secrets management
+- Service types: ClusterIP / NodePort
 
-k3s single-node cluster setup
-FastAPI deployed via Helm chart
-ConfigMap & Secrets management
-Service types: ClusterIP / NodePort
+### ✅ Level 3 — GitOps & Monitoring
+- ArgoCD installed on k3s
+- Auto-sync from `helm/fastapi/` on main branch
+- Self-heal enabled
+- Prometheus + Grafana + Alertmanager stack
+- 5 alert rules → Discord notifications
 
-✅ Level 3 — GitOps & Monitoring
+### ✅ Level 4 — Advanced Kubernetes
+- **Nginx Ingress Controller** — expose services via domain instead of NodePort
+- **NetworkPolicy** — pod-level firewall, restrict traffic to ingress-nginx namespace only
+- **HPA** — auto-scale FastAPI pods 1→5 replicas based on CPU utilization (50%)
 
-ArgoCD installed on k3s
-Auto-sync from helm/fastapi/ on main branch
-Self-heal enabled
-Prometheus + Grafana + Alertmanager stack
-5 alert rules → Discord notifications
+### ✅ Level 5 — StatefulSet, RBAC & Multi-env Helm
+- PostgreSQL via StatefulSet + PersistentVolume (2Gi)
+- ConfigMap & Secret management for DB credentials
+- RBAC — namespace-scoped Role + RoleBinding for FastAPI service account
+- Helm multi-environment deploy (dev / prod) with separate values files
 
-✅ Level 4 — Advanced Kubernetes
+### ✅ Level 6 — Ingress + TLS
+- Nginx Ingress Controller + cert-manager for domain-based routing
+- Self-signed ClusterIssuer for HTTPS termination
+- Multi-service ingress (FastAPI, Grafana, Prometheus, Alertmanager)
 
-Nginx Ingress Controller — expose services via domain instead of NodePort
-NetworkPolicy — pod-level firewall, restrict traffic to ingress-nginx namespace only
-HPA — auto-scale FastAPI pods 1→5 replicas based on CPU utilization (50%)
+| Domain | Service |
+|--------|---------|
+| fastapi.lab | FastAPI App (HTTPS) |
+| grafana.lab | Grafana Dashboard |
+| prometheus.lab | Prometheus |
+| alertmanager.lab | Alertmanager |
 
-✅ Level 5 — StatefulSet, RBAC & Multi-env Helm
+### ✅ Level 7 — HPA Stress Test
+- Auto-scaling FastAPI pods based on CPU load
+- Stress test result: 199% CPU spike → scaled from 1 → 6 pods automatically
 
-PostgreSQL via StatefulSet + PersistentVolume (2Gi)
-ConfigMap & Secret management for DB credentials
-RBAC — namespace-scoped Role + RoleBinding for FastAPI service account
-Helm multi-environment deploy (dev / prod) with separate values files
+| Setting | Value |
+|---------|-------|
+| Min Replicas | 1 |
+| Max Replicas | 10 |
+| Target CPU | 50% |
 
-✅ Level 6 — Ingress + TLS
+---
 
-Nginx Ingress Controller + cert-manager for domain-based routing
-Self-signed ClusterIssuer for HTTPS termination
-Multi-service ingress (FastAPI, Grafana, Prometheus, Alertmanager)
+## CI/CD Pipeline
 
-DomainServicefastapi.labFastAPI App (HTTPS)grafana.labGrafana Dashboardprometheus.labPrometheusalertmanager.labAlertmanager
-✅ Level 7 — HPA Stress Test
+Every push to `main` triggers:
 
-Auto-scaling FastAPI pods based on CPU load
-Stress test result: 199% CPU spike → scaled from 1 → 6 pods automatically
-
-SettingValueMin Replicas1Max Replicas10Target CPU50%
-
-CI/CD Pipeline
-Every push to main triggers:
+```
 1. Build Docker image
 2. Push image → ghcr.io/derbswag/devops-api:latest + :<git-sha>
 3. Self-hosted runner deploys via Docker Compose
 4. ArgoCD detects Helm changes → sync to Kubernetes
+```
 
-GitOps with ArgoCD
-ArgoCD monitors helm/fastapi/ and auto-syncs to Kubernetes:
-bash# Check sync status
+---
+
+## GitOps with ArgoCD
+
+ArgoCD monitors `helm/fastapi/` and auto-syncs to Kubernetes:
+
+```bash
+# Check sync status
 kubectl get application -n argocd
 
 # Access ArgoCD UI
 kubectl port-forward svc/argocd-server -n argocd 8888:443 --address 0.0.0.0
 # https://<VM_IP>:8888
+```
 
-Getting Started
-1. Clone repository
-bashgit clone https://github.com/DerbSwag/Devops-fastapi-lab.git
+---
+
+## Getting Started
+
+### 1. Clone repository
+
+```bash
+git clone https://github.com/DerbSwag/Devops-fastapi-lab.git
 cd Devops-fastapi-lab
-2. Configure secrets
-bash# Copy example env file and fill in your values
+```
+
+### 2. Configure secrets
+
+```bash
+# Copy example env file and fill in your values
 cp .env.example .env
 # Set DISCORD_WEBHOOK_URL in .env — never commit real values
-3. Run Application (Docker)
-bashdocker compose -f compose/app.yml up -d
+```
+
+### 3. Run Application (Docker)
+
+```bash
+docker compose -f compose/app.yml up -d
 docker compose -f compose/monitoring.yml up -d
-4. Deploy to Kubernetes (Helm)
-bashexport KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+```
+
+### 4. Deploy to Kubernetes (Helm)
+
+```bash
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 helm install fastapi helm/fastapi/
-5. Apply Level 4 configs
-bashkubectl apply -f level4-ingress-hpa/
-6. Deploy Level 5 (StatefulSet + RBAC)
-bash# Create secrets first (never commit real values)
+```
+
+### 5. Apply Level 4 configs
+
+```bash
+kubectl apply -f level4-ingress-hpa/
+```
+
+### 6. Deploy Level 5 (StatefulSet + RBAC)
+
+```bash
+# Create secrets first (never commit real values)
 kubectl create secret generic fastapi-secret \
   --from-literal=DB_USER=postgres \
   --from-literal=DB_PASSWORD=yourpassword \
@@ -182,16 +253,24 @@ kubectl apply -f k8s/level5/configmap.yaml
 kubectl apply -f k8s/level5/rbac/
 kubectl apply -f k8s/level5/postgres/
 kubectl apply -f k8s/level5/fastapi/
-7. Helm multi-environment deploy
-bash# Dev (NodePort 32010)
+```
+
+### 7. Helm multi-environment deploy
+
+```bash
+# Dev (NodePort 32010)
 helm upgrade --install fastapi-dev ./helm/fastapi \
   -f helm/values/values-dev.yaml -n level5-dev --create-namespace
 
 # Prod (NodePort 32011)
 helm upgrade --install fastapi-prod ./helm/fastapi \
   -f helm/values/values-prod.yaml -n level5-prod --create-namespace
-8. Install Ingress + TLS (Level 6)
-bashhelm install ingress-nginx ingress-nginx/ingress-nginx \
+```
+
+### 8. Install Ingress + TLS (Level 6)
+
+```bash
+helm install ingress-nginx ingress-nginx/ingress-nginx \
   --namespace ingress-nginx --create-namespace \
   --set controller.service.type=NodePort \
   --set controller.service.nodePorts.http=30080 \
@@ -203,44 +282,90 @@ helm install cert-manager jetstack/cert-manager \
 
 kubectl apply -f k8s/cert-manager/cluster-issuer.yaml
 kubectl apply -f k8s/ingress/
+```
 
-Level 4 — Ingress, NetworkPolicy, HPA
-Ingress Controller
-bash# Access via domain (add to /etc/hosts: <VM_IP> fastapi.local)
+---
+
+## Level 4 — Ingress, NetworkPolicy, HPA
+
+### Ingress Controller
+
+```bash
+# Access via domain (add to /etc/hosts: <VM_IP> fastapi.local)
 curl -H "Host: fastapi.local" http://<VM_IP>:30080/
-NetworkPolicy
-bashkubectl apply -f level4-ingress-hpa/fastapi-netpol.yaml
+```
+
+### NetworkPolicy
+
+```bash
+kubectl apply -f level4-ingress-hpa/fastapi-netpol.yaml
 
 # Verify
 curl -H "Host: fastapi.local" http://<VM_IP>:30080/  # ✅ allowed
 curl --max-time 5 http://<POD_IP>:8000/               # ❌ blocked
-HPA
-bashkubectl apply -f level4-ingress-hpa/fastapi-hpa.yaml
+```
+
+### HPA
+
+```bash
+kubectl apply -f level4-ingress-hpa/fastapi-hpa.yaml
 
 # Monitor scaling
 watch "kubectl get hpa && kubectl top pods"
+```
 
-Service URLs
-ServiceURLFastAPI (Docker)http://localhost:8000FastAPI (K8s - Ingress)http://fastapi.local:30080FastAPI (K8s - NodePort)http://<VM_IP>:32010Prometheushttp://localhost:9090Grafanahttp://localhost:3000Alertmanagerhttp://localhost:9093Node Exporterhttp://localhost:9100Portainerhttp://localhost:9000ArgoCDhttps://<VM_IP>:8888
+---
 
-Note: All URLs above are for local lab use only. Do not expose these ports to the internet without proper authentication.
+## Service URLs
 
+| Service | URL |
+|---------|-----|
+| FastAPI (Docker) | http://localhost:8000 |
+| FastAPI (K8s - Ingress) | http://fastapi.local:30080 |
+| FastAPI (K8s - NodePort) | http://\<VM_IP\>:32010 |
+| Prometheus | http://localhost:9090 |
+| Grafana | http://localhost:3000 |
+| Alertmanager | http://localhost:9093 |
+| Node Exporter | http://localhost:9100 |
+| Portainer | http://localhost:9000 |
+| ArgoCD | https://\<VM_IP\>:8888 |
 
-Monitoring & Alerting
-Alert Rules
-AlertConditionSeverityHighCPUUsageCPU > 80% for 1mwarningHighMemoryUsageRAM > 85% for 1mwarningDiskSpaceLowDisk > 80% for 1mcriticalInstanceDownService down for 1mcriticalContainerHighCPUContainer CPU > 80%warning
-Alerts are sent to Discord via Alertmanager webhook (configured via DISCORD_WEBHOOK_URL environment variable — see .env.example).
-Grafana
+> **Note:** All URLs above are for local lab use only. Do not expose these ports to the internet without proper authentication.
+
+---
+
+## Monitoring & Alerting
+
+### Alert Rules
+
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| HighCPUUsage | CPU > 80% for 1m | warning |
+| HighMemoryUsage | RAM > 85% for 1m | warning |
+| DiskSpaceLow | Disk > 80% for 1m | critical |
+| InstanceDown | Service down for 1m | critical |
+| ContainerHighCPU | Container CPU > 80% | warning |
+
+Alerts are sent to **Discord** via Alertmanager webhook (configured via `DISCORD_WEBHOOK_URL` environment variable — see `.env.example`).
+
+### Grafana
+
+```
 URL:      http://localhost:3000
 Username: admin
 Password: admin  ← change this for any non-local environment
+```
 
-Security Notes
+---
 
-Discord webhook URL is loaded from environment variable, never hardcoded
-Kubernetes secrets are created via kubectl create secret — template files use placeholder values only
-Real secret files (*secret-real.yaml, *.env) are excluded via .gitignore
+## Security Notes
 
+- Discord webhook URL is loaded from environment variable, never hardcoded
+- Kubernetes secrets are created via `kubectl create secret` — template files use placeholder values only
+- Real secret files (`*secret-real.yaml`, `*.env`) are excluded via `.gitignore`
 
-License
+---
+
+## License
+
 MIT License
