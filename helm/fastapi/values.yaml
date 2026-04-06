@@ -12,7 +12,8 @@ fullnameOverride: "fastapi"
 serviceAccount:
   create: false
 
-podAnnotations: {}
+podAnnotations:
+  linkerd.io/inject: enabled
 podLabels: {}
 podSecurityContext: {}
 securityContext: {}
