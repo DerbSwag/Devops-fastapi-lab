@@ -6,40 +6,52 @@ A production-style DevOps lab using FastAPI, Docker, Kubernetes, and a full moni
 
 ## Architecture
 
-```
-git push
-    │
-    ▼
-GitHub Actions (CI)
-    ├── Build Docker image
-    └── Push → GitHub Container Registry (GHCR)
-                    │
-                    ▼
-             ArgoCD (GitOps CD)
-                    ├── Detect Helm chart changes
-                    ├── Sync → Kubernetes (k3s)
-                    └── Pod update อัตโนมัติ
+### Full System Diagram
 
-[ Ubuntu VM - Home Lab ]
-    ├── Docker Stack
-    │     ├── FastAPI (compose-api-1)
-    │     ├── Nginx Reverse Proxy
-    │     ├── Prometheus
-    │     ├── Grafana
-    │     ├── Alertmanager ──► Discord 🔔
-    │     ├── Node Exporter
-    │     ├── cAdvisor
-    │     └── Portainer
-    │
-    └── Kubernetes (k3s)
-          ├── FastAPI (Helm chart)
-          ├── Nginx Ingress Controller  ← Level 4
-          ├── NetworkPolicy             ← Level 4
-          ├── HPA (Auto-scaling)        ← Level 4
-          └── ArgoCD
+```
+Developer Workflow:
+  git push --> GitHub Actions (CI) --> Build image --> GHCR
+                                                       |
+                                             ArgoCD (GitOps CD)
+                                                       |
+                                             auto-sync --> K8s pods
+
+  +---- Home Lab (k3s 1-node) ----+   +---- Company Lab (k3s 3-node / Proxmox) ----+
+  | FastAPI (Helm)                |   | FastAPI (Helm)                              |
+  | ArgoCD (auto-sync+self-heal)  |   | ArgoCD (auto-sync)                          |
+  | cert-manager (TLS)            |   | Zabbix v7.0 (14 hosts)                      |
+  |                               |   |                                              |
+  | Monitoring:                   |   | Monitoring:                                  |
+  |   Prometheus + Grafana        |   |   Prometheus + Grafana                       |
+  |   Loki (log aggregation)      |   |   Alertmanager --> Lark                      |
+  |   Alertmanager --> Discord    |   |   Zabbix SNMP (K8s, Windows, CCTV)           |
+  +-------------------------------+   +----------------------------------------------+
+
+  +---- Perimeter ---------------------------------------------------------+
+  | FortiGate 60F -- VPN / NAT / VLAN segmentation / Firewall policy       |
+  +------------------------------------------------------------------------+
 ```
 
----
+### CI/CD Pipeline Flow
+
+```
+git push --> GitHub Actions --> Build Docker image --> Push to GHCR
+                                                         |
+         Docker Compose (Home Lab)          ArgoCD detects Helm drift
+                  |                                       |
+         FastAPI + Nginx running             auto-sync --> K8s pods updated
+                                            (zero-downtime rolling update)
+```
+
+### Monitoring & Observability
+
+```
+Application --> Prometheus --> Grafana (dashboards)
+                    |
+K8s Nodes ----> Alertmanager --> Discord / Lark (alerts)
+
+App Logs -----> Loki ----------> Grafana (log search)
+```
 
 ## Tech Stack
 
