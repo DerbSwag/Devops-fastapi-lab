@@ -391,4 +391,5 @@ Password: admin  ← change this for any non-local environment
 
 ## License
 
-MIT License
+MIT License#   C I / C D   t e s t   t r i g g e r   2 0 2 6 - 0 5 - 0 5   1 4 : 3 4  
+ 
