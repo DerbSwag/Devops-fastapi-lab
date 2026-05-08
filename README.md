@@ -391,5 +391,4 @@ Password: admin  ← change this for any non-local environment
 
 ## License
 
-MIT License#   C I / C D   t e s t   t r i g g e r   2 0 2 6 - 0 5 - 0 5   1 4 : 3 4  
- 
+MIT License# CI/CD test trigger 2026-05-05 14:34
