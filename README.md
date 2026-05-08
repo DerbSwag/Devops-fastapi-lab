@@ -1,4 +1,4 @@
-# DevOps FastAPI Lab 🚀
+﻿# DevOps FastAPI Lab 🚀
 
 A production-style DevOps lab using FastAPI, Docker, Kubernetes, and a full monitoring stack with automated CI/CD pipeline and GitOps.
 
@@ -190,7 +190,7 @@ Before getting started, ensure the following are installed:
 | Max Replicas | 10 |
 | Target CPU | 50% |
 
-### 🔄 Level 8 — Loki Logging Stack
+### ✅ Level 8 — Loki Logging Stack
 - Loki-stack Classic (single binary) deployed in `monitoring` namespace
 - Promtail log collection from all pods
 - Grafana datasource integration
