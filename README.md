@@ -53,6 +53,23 @@ K8s Nodes ----> Alertmanager --> Discord / Lark (alerts)
 App Logs -----> Loki ----------> Grafana (log search)
 ```
 
+```mermaid
+graph LR
+    Dev[Developer] --> |git push| GHA[GitHub Actions CI]
+    GHA --> |Build & Push| GHCR[GHCR Registry]
+    GHCR --> ArgoCD[ArgoCD GitOps]
+    ArgoCD --> |auto-sync| K8s[K8s Pods]
+    K8s --> FastAPI[FastAPI App]
+    FastAPI --> Prometheus[Prometheus]
+    Prometheus --> Grafana[Grafana]
+    Prometheus --> Alert[Alertmanager]
+    Alert --> Discord[Discord/Lark]
+    FastAPI --> Loki[Loki Logs]
+    Loki --> Grafana
+```
+
+
+
 ## Tech Stack
 
 | Category | Tools |
