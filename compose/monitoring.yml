@@ -3,11 +3,10 @@ services:
   prometheus:
     image: prom/prometheus
     container_name: prometheus
+    network_mode: host
     volumes:
       - ../monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - ../monitoring/prometheus/alerts.yml:/etc/prometheus/alerts.yml
-    ports:
-      - "9090:9090"
     restart: unless-stopped
 
   grafana:
