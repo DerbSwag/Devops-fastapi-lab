@@ -1,24 +1,4 @@
 services:
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    network_mode: host
-    volumes:
-      - ../monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ../monitoring/prometheus/alerts.yml:/etc/prometheus/alerts.yml
-    restart: unless-stopped
-
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ../monitoring/grafana/provisioning:/etc/grafana/provisioning
-      - ../monitoring/grafana/dashboards:/var/lib/grafana/dashboards
-    restart: unless-stopped
-
   alertmanager:
     image: prom/alertmanager
     container_name: alertmanager
@@ -27,6 +7,3 @@ services:
     volumes:
       - ../monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
     restart: unless-stopped
-
-volumes:
-  grafana_data:
