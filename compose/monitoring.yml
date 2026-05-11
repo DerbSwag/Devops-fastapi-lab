@@ -1,4 +1,3 @@
-version: '3'
 services:
   prometheus:
     image: prom/prometheus
@@ -25,8 +24,11 @@ services:
     container_name: alertmanager
     ports:
       - "9093:9093"
+    env_file:
+      - ../.env
     volumes:
-      - ../monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - ../monitoring/alertmanager/alertmanager.yml.template:/etc/alertmanager/alertmanager.yml.template
+    entrypoint: ["/bin/sh", "-c", "envsubst < /etc/alertmanager/alertmanager.yml.template > /etc/alertmanager/alertmanager.yml && /bin/alertmanager --config.file=/etc/alertmanager/alertmanager.yml"]
     restart: unless-stopped
 
 volumes:
