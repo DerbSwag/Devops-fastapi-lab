@@ -21,13 +21,6 @@ services:
       - ../monitoring/grafana/dashboards:/var/lib/grafana/dashboards
     restart: unless-stopped
 
-  node-exporter:
-    image: prom/node-exporter
-    container_name: node-exporter
-    ports:
-      - "9100:9100"
-    restart: unless-stopped
-
   alertmanager:
     image: prom/alertmanager
     container_name: alertmanager
