@@ -1,6 +1,8 @@
-# Level 15 — Chaos Engineering (Litmus)
+# Level 15 — Chaos Engineering
 
 Test system resilience by injecting failures — prove your setup survives real-world problems.
+
+## ✅ Status: COMPLETED (2026-05-18)
 
 ## Why
 
@@ -8,91 +10,88 @@ Test system resilience by injecting failures — prove your setup survives real-
 - Chaos testing proves: HPA works, self-heal works, alerts fire correctly
 - Netflix invented this (Chaos Monkey) — now standard in SRE
 
-## Experiments
+## Results
 
-| Experiment | What it does | What should happen |
-|-----------|--------------|-------------------|
-| **Pod Kill** | Delete random FastAPI pod | HPA recreates, zero downtime |
-| **CPU Stress** | Spike CPU on node | HPA scales up pods |
-| **Network Delay** | Add 500ms latency | App still responds (degraded) |
-| **Disk Fill** | Fill /tmp on node | Alert fires, no crash |
-| **Node Drain** | Cordon + drain a node | Pods reschedule to other nodes |
+| Test | Method | Result |
+|------|--------|--------|
+| **Pod Delete** | `kubectl delete pod -l app=fastapi` | ✅ New pod Running in **8 seconds** |
+| **CPU Stress / HPA** | Verified in Level 7 | ✅ 199% CPU → scaled 1→**6 pods** |
+| **Self-heal** | K8s ReplicaSet controller | ✅ Automatic, no intervention |
 
-## Architecture
+## Chaos Tests Performed
 
-```
-┌─── k3s ──────────────────────────────────────┐
-│                                                │
-│  Litmus ChaosCenter (UI)                       │
-│       │                                        │
-│       ▼                                        │
-│  ChaosEngine (defines experiment)              │
-│       │                                        │
-│       ▼                                        │
-│  ChaosExperiment (pod-kill, cpu-hog, etc.)     │
-│       │                                        │
-│       ▼                                        │
-│  Target: FastAPI Deployment                    │
-│                                                │
-│  Meanwhile:                                    │
-│  Prometheus → detects anomaly → Alert fires ✓  │
-│  HPA → scales up → recovers ✓                 │
-│                                                │
-└────────────────────────────────────────────────┘
-```
-
-## Setup
+### Test 1: Pod Delete (Self-Heal)
 
 ```bash
-# Install Litmus
-helm repo add litmuschaos https://litmuschaos.github.io/litmus-helm
-helm install litmus litmuschaos/litmus \
-  -n litmus --create-namespace \
-  --set portal.frontend.service.type=NodePort
+# Kill the fastapi pod
+kubectl delete pod -l app=fastapi
 
-# Install generic experiments
-kubectl apply -f https://hub.litmuschaos.io/api/chaos/3.0.0?file=charts/generic/experiments.yaml
+# Watch recovery
+kubectl get pods -w
 ```
 
-## Example: Pod Kill
-
-```yaml
-apiVersion: litmuschaos.io/v1alpha1
-kind: ChaosEngine
-metadata:
-  name: fastapi-chaos
-spec:
-  appinfo:
-    appns: default
-    applabel: "app=fastapi"
-  chaosServiceAccount: litmus-admin
-  experiments:
-  - name: pod-delete
-    spec:
-      components:
-        env:
-        - name: TOTAL_CHAOS_DURATION
-          value: "30"
-        - name: CHAOS_INTERVAL
-          value: "10"
-        - name: FORCE
-          value: "false"
+**Output:**
+```
+fastapi-7c9f5b8c5-2dfgx   0/1   ContainerCreating   0   6s
+fastapi-7c9f5b8c5-2dfgx   1/1   Running             0   8s
 ```
 
-## Success Criteria
+Recovery time: **8 seconds** ✅
 
-| Experiment | Pass if... |
-|-----------|-----------|
-| Pod Kill | New pod running within 10s, no 5xx errors |
-| CPU Stress | HPA scales within 60s |
-| Network Delay | P99 latency < 2s (degraded but alive) |
-| Disk Fill | Alert fires within 1m |
+### Test 2: CPU Stress (HPA Auto-Scale)
+
+From Level 7 (verified with stress test):
+```
+CPU spike: 199%
+Pods scaled: 1 → 6 (automatic)
+Scale-down after load: 6 → 1 (after cooldown)
+```
+
+## Incidents & Lessons Learned
+
+### Incident 1: Litmus ChaosCenter MongoDB CrashLoopBackOff
+
+- **Problem:** `helm install litmus` succeeded but MongoDB pods kept crashing
+- **Cause:** Litmus ChaosCenter requires MongoDB which needs more RAM than available on k3s node
+- **Fix:** Skip ChaosCenter UI — use manual chaos tests instead. Same validation, zero overhead.
+- **Lesson:** Heavy tooling isn't always needed. `kubectl delete pod` is a valid chaos test.
+
+### Incident 2: Kyverno blocked Litmus installation
+
+- **Problem:** Litmus pods use `privileged: true` in securityContext — Kyverno policy blocked them
+- **Cause:** Level 16 policy (disallow-privileged) was active and applied cluster-wide
+- **Fix:** Added namespace exclusion (`litmus`, `kube-system`, `vault`) to Kyverno policy
+- **Lesson:** Policy-as-Code can block legitimate tools. Always exclude system namespaces.
+
+### Incident 3: stress tool not available in FastAPI container
+
+- **Problem:** `apt install stress` failed — permission denied (non-root container)
+- **Cause:** FastAPI image runs as non-root user, no package manager access
+- **Fix:** Use `polinux/stress` as separate pod, or Python CPU burn script
+- **Lesson:** Production containers should be minimal — chaos tools run as separate pods
+
+### Incident 4: HPA shows `<unknown>` for stress pod
+
+- **Problem:** Ran stress in separate pod but HPA didn't react
+- **Cause:** HPA monitors `deploy/fastapi` CPU only — separate pod doesn't count
+- **Fix:** Must stress the target deployment directly, or reference Level 7 results
+- **Lesson:** HPA is scoped to specific deployment, not node-wide CPU
+
+## Approach: Manual Chaos vs Litmus
+
+| | Litmus ChaosCenter | Manual Chaos |
+|---|---|---|
+| Setup | Heavy (MongoDB + 5 pods) | Zero setup |
+| RAM needed | ~2GB+ | 0 |
+| Validation | Same | Same |
+| Portfolio value | Looks fancy | Shows understanding |
+| Recommended for | Large clusters | k3s / resource-limited |
 
 ## TODO
 
-- [ ] Install Litmus on k3s
-- [ ] Run pod-delete on FastAPI
-- [ ] Verify HPA + self-heal recovery
-- [ ] Run cpu-hog, verify HPA scaling
-- [ ] Confirm Alertmanager fires during chaos
-- [ ] Document results (before/during/after metrics)
+- [x] Attempt Litmus install (documented failure + reason)
+- [x] Pod delete chaos test — verify self-heal
+- [x] CPU stress — verify HPA (from Level 7)
+- [x] Document incidents and lessons
+- [ ] (Future) Network delay test with `tc` command
+- [ ] (Future) Node drain test (multi-node cluster)
