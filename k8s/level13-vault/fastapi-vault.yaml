@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-vault
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi-vault
+  template:
+    metadata:
+      labels:
+        app: fastapi-vault
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "fastapi"
+        vault.hashicorp.com/agent-inject-secret-db-creds: "secret/data/fastapi/db"
+    spec:
+      serviceAccountName: fastapi-sa
+      containers:
+      - name: app
+        image: ghcr.io/derbswag/devops-api:latest
+        ports:
+        - containerPort: 8000
