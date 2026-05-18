@@ -1,0 +1,32 @@
+controller:
+  image:
+    tag: "lts"
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "1000m"
+      memory: "2Gi"
+  serviceType: ClusterIP
+  installPlugins:
+    - kubernetes:latest
+    - workflow-aggregator:latest
+    - git:latest
+    - github:latest
+    - docker-workflow:latest
+    - credentials-binding:latest
+
+agent:
+  enabled: true
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1Gi"
+
+persistence:
+  enabled: true
+  size: "5Gi"

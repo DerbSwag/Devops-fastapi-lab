@@ -1,0 +1,12 @@
+apiVersion: split.smi-spec.io/v1alpha1
+kind: TrafficSplit
+metadata:
+  name: fastapi-canary
+  namespace: default
+spec:
+  service: fastapi
+  backends:
+  - service: fastapi-stable
+    weight: 900m
+  - service: fastapi-canary
+    weight: 100m
