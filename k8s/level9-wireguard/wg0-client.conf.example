@@ -1,0 +1,15 @@
+# WireGuard Client (Home Lab — k3s node or Ubuntu VM)
+# Location: /etc/wireguard/wg0.conf
+
+[Interface]
+Address = 10.0.0.2/24
+PrivateKey = <HOME_PRIVATE_KEY>
+
+# Optional: DNS through tunnel
+# DNS = 192.168.1.1
+
+[Peer]
+PublicKey = <SERVER_PUBLIC_KEY>
+Endpoint = <COMPANY_PUBLIC_IP>:51820
+AllowedIPs = 10.0.0.0/24, 192.168.1.0/24, 192.168.2.0/24
+PersistentKeepalive = 25

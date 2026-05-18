@@ -1,0 +1,17 @@
+# WireGuard Server (Company Lab — Ubuntu VM on Proxmox)
+# Location: /etc/wireguard/wg0.conf
+
+[Interface]
+Address = 10.0.0.1/24
+ListenPort = 51820
+PrivateKey = <SERVER_PRIVATE_KEY>
+
+# Enable IP forwarding for site-to-site routing
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+# Peer: Home Lab
+[Peer]
+PublicKey = <HOME_PUBLIC_KEY>
+AllowedIPs = 10.0.0.2/32, 192.168.0.0/24
+# If home has dynamic IP, omit Endpoint — home will connect to us
