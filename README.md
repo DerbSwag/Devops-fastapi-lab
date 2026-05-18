@@ -1,9 +1,24 @@
-# DevOps FastAPI Lab ??
+ï»¿# DevOps FastAPI Lab ??
 
 A production-style DevOps lab using FastAPI, Docker, Kubernetes, and a full monitoring stack with automated CI/CD pipeline and GitOps.
 
 ---
 
+
+## ðŸ“ˆ Results
+
+| Metric | Value |
+|--------|-------|
+| Kubernetes levels completed | **8 / 8** |
+| Total commits | **72+** |
+| HPA auto-scaling verified | 1 â†’ **6 pods** (199% CPU spike) |
+| Alert rules active | **5** (CPU, RAM, Disk, Down, Container) |
+| GitOps sync | ArgoCD auto-sync + **self-heal** |
+| CI/CD pipeline | Push â†’ Build â†’ GHCR â†’ Deploy in **<3 min** |
+| Monitoring coverage | Metrics + Logs + Alerts (Prometheus/Loki/Alertmanager) |
+| Environments | Home Lab (k3s) + Company Lab (Proxmox 3-node) |
+
+---
 ## Architecture
 
 ### Full System Diagram
@@ -93,47 +108,47 @@ graph LR
 ```
 .
 +-- app/                    # FastAPI application
-¦   +-- main.py
-¦   +-- requirements.txt
+ï¿½   +-- main.py
+ï¿½   +-- requirements.txt
 +-- docker/
-¦   +-- Dockerfile
+ï¿½   +-- Dockerfile
 +-- compose/
-¦   +-- app.yml
-¦   +-- monitoring.yml
+ï¿½   +-- app.yml
+ï¿½   +-- monitoring.yml
 +-- monitoring/
-¦   +-- prometheus/
-¦   ¦   +-- prometheus.yml
-¦   ¦   +-- alerts.yml
-¦   +-- grafana/
-¦   +-- alertmanager/
-¦       +-- alertmanager.yml
+ï¿½   +-- prometheus/
+ï¿½   ï¿½   +-- prometheus.yml
+ï¿½   ï¿½   +-- alerts.yml
+ï¿½   +-- grafana/
+ï¿½   +-- alertmanager/
+ï¿½       +-- alertmanager.yml
 +-- k8s/
-¦   +-- level4-ingress-hpa/     ? Level 4 (Ingress + TLS + HPA)
-¦   ¦   +-- cluster-issuer.yaml
-¦   ¦   +-- fastapi-ingress-tls.yaml
-¦   ¦   +-- monitoring-ingress.yaml
-¦   ¦   +-- hpa.yaml
-¦   +-- level5-statefulset/     ? Level 5 (StatefulSet + RBAC)
-¦   ¦   +-- configmap.yaml
-¦   ¦   +-- secret.yaml
-¦   ¦   +-- fastapi/
-¦   ¦   +-- postgres/
-¦   ¦   +-- rbac/
-¦   ¦   +-- helm/
-¦   +-- level8-loki/            ? Level 8 (Loki logging)
-¦   ¦   +-- loki-values.yaml
-¦   +-- rbac/
+ï¿½   +-- level4-ingress-hpa/     ? Level 4 (Ingress + TLS + HPA)
+ï¿½   ï¿½   +-- cluster-issuer.yaml
+ï¿½   ï¿½   +-- fastapi-ingress-tls.yaml
+ï¿½   ï¿½   +-- monitoring-ingress.yaml
+ï¿½   ï¿½   +-- hpa.yaml
+ï¿½   +-- level5-statefulset/     ? Level 5 (StatefulSet + RBAC)
+ï¿½   ï¿½   +-- configmap.yaml
+ï¿½   ï¿½   +-- secret.yaml
+ï¿½   ï¿½   +-- fastapi/
+ï¿½   ï¿½   +-- postgres/
+ï¿½   ï¿½   +-- rbac/
+ï¿½   ï¿½   +-- helm/
+ï¿½   +-- level8-loki/            ? Level 8 (Loki logging)
+ï¿½   ï¿½   +-- loki-values.yaml
+ï¿½   +-- rbac/
 +-- helm/
-¦   +-- fastapi/
-¦       +-- Chart.yaml
-¦       +-- values.yaml
-¦       +-- values/
-¦       +-- templates/
+ï¿½   +-- fastapi/
+ï¿½       +-- Chart.yaml
+ï¿½       +-- values.yaml
+ï¿½       +-- values/
+ï¿½       +-- templates/
 +-- nginx/
-¦   +-- my-api.conf
+ï¿½   +-- my-api.conf
 +-- scripts/
-¦   +-- setup.sh
-¦   +-- deploy.sh
+ï¿½   +-- setup.sh
+ï¿½   +-- deploy.sh
 +-- .github/workflows/
     +-- docker.yml
 ```
@@ -154,38 +169,38 @@ Before getting started, ensure the following are installed:
 
 ## Learning Roadmap
 
-### ? Level 1 — Docker & CI/CD
+### ? Level 1 ï¿½ Docker & CI/CD
 - FastAPI containerized with Docker
 - Docker Compose for multi-service stack
 - GitHub Actions CI/CD pipeline
 - Auto-deploy via self-hosted runner
 - Image pushed to GHCR
 
-### ? Level 2 — Kubernetes & Helm
+### ? Level 2 ï¿½ Kubernetes & Helm
 - k3s single-node cluster setup
 - FastAPI deployed via Helm chart
 - ConfigMap & Secrets management
 - Service types: ClusterIP / NodePort
 
-### ? Level 3 — GitOps & Monitoring
+### ? Level 3 ï¿½ GitOps & Monitoring
 - ArgoCD installed on k3s
 - Auto-sync from `helm/fastapi/` on main branch
 - Self-heal enabled
 - Prometheus + Grafana + Alertmanager stack
 - 5 alert rules ? Discord notifications
 
-### ? Level 4 — Advanced Kubernetes
-- Nginx Ingress Controller — expose services via domain instead of NodePort
-- NetworkPolicy — pod-level firewall, restrict traffic to ingress-nginx namespace only
-- HPA — auto-scale FastAPI pods 1?5 replicas based on CPU utilization (50%)
+### ? Level 4 ï¿½ Advanced Kubernetes
+- Nginx Ingress Controller ï¿½ expose services via domain instead of NodePort
+- NetworkPolicy ï¿½ pod-level firewall, restrict traffic to ingress-nginx namespace only
+- HPA ï¿½ auto-scale FastAPI pods 1?5 replicas based on CPU utilization (50%)
 
-### ? Level 5 — StatefulSet, RBAC & Multi-env Helm
+### ? Level 5 ï¿½ StatefulSet, RBAC & Multi-env Helm
 - PostgreSQL via StatefulSet + PersistentVolume (2Gi)
 - ConfigMap & Secret management for DB credentials
-- RBAC — namespace-scoped Role + RoleBinding for FastAPI service account
+- RBAC ï¿½ namespace-scoped Role + RoleBinding for FastAPI service account
 - Helm multi-environment deploy (dev / prod) with separate values files
 
-### ? Level 6 — Ingress + TLS
+### ? Level 6 ï¿½ Ingress + TLS
 - Nginx Ingress Controller + cert-manager for domain-based routing
 - Self-signed ClusterIssuer for HTTPS termination
 - Multi-service ingress (FastAPI, Grafana, Prometheus, Alertmanager)
@@ -197,7 +212,7 @@ Before getting started, ensure the following are installed:
 | prometheus.lab | Prometheus |
 | alertmanager.lab | Alertmanager |
 
-### ? Level 7 — HPA Stress Test
+### ? Level 7 ï¿½ HPA Stress Test
 - Auto-scaling FastAPI pods based on CPU load
 - Stress test result: 199% CPU spike ? scaled from 1 ? 6 pods automatically
 
@@ -207,7 +222,7 @@ Before getting started, ensure the following are installed:
 | Max Replicas | 10 |
 | Target CPU | 50% |
 
-### ? Level 8 — Loki Logging Stack
+### ? Level 8 ï¿½ Loki Logging Stack
 - Loki-stack Classic (single binary) deployed in `monitoring` namespace
 - Promtail log collection from all pods
 - Grafana datasource integration
@@ -253,7 +268,7 @@ cd Devops-fastapi-lab
 
 ```bash
 cp .env.example .env
-# Set DISCORD_WEBHOOK_URL in .env — never commit real values
+# Set DISCORD_WEBHOOK_URL in .env ï¿½ never commit real values
 ```
 
 ### 3. Run Application (Docker)
@@ -338,7 +353,7 @@ helm upgrade --install loki-stack grafana/loki-stack \
 
 ---
 
-## Level 4 — Ingress, NetworkPolicy, HPA
+## Level 4 ï¿½ Ingress, NetworkPolicy, HPA
 
 ### Ingress Controller
 
@@ -401,7 +416,7 @@ Password: admin  ? change this for any non-local environment
 ## Security Notes
 
 - Discord webhook URL is loaded from environment variable, never hardcoded
-- Kubernetes secrets are created via `kubectl create secret` — template files use placeholder values only
+- Kubernetes secrets are created via `kubectl create secret` ï¿½ template files use placeholder values only
 - Real secret files (`*secret-real.yaml`, `*.env`) are excluded via `.gitignore`
 
 ---
