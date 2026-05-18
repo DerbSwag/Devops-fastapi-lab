@@ -1,4 +1,4 @@
-﻿# DevOps FastAPI Lab 🚀
+# DevOps FastAPI Lab ??
 
 A production-style DevOps lab using FastAPI, Docker, Kubernetes, and a full monitoring stack with automated CI/CD pipeline and GitOps.
 
@@ -82,7 +82,7 @@ graph LR
 | Ingress | Nginx Ingress Controller |
 | Reverse Proxy | Nginx, Traefik |
 | Monitoring | Prometheus, Grafana, Node Exporter, cAdvisor |
-| Alerting | Alertmanager → Discord |
+| Alerting | Alertmanager ? Discord |
 | CI/CD | GitHub Actions + Self-hosted Runner |
 | Version Control | Git, GitHub |
 
@@ -92,50 +92,50 @@ graph LR
 
 ```
 .
-├── app/                    # FastAPI application
-│   ├── main.py
-│   └── requirements.txt
-├── docker/
-│   └── Dockerfile
-├── compose/
-│   ├── app.yml
-│   └── monitoring.yml
-├── monitoring/
-│   ├── prometheus/
-│   │   ├── prometheus.yml
-│   │   └── alerts.yml
-│   ├── grafana/
-│   └── alertmanager/
-│       └── alertmanager.yml
-├── k8s/
-│   ├── level4-ingress-hpa/     ← Level 4 (Ingress + TLS + HPA)
-│   │   ├── cluster-issuer.yaml
-│   │   ├── fastapi-ingress-tls.yaml
-│   │   ├── monitoring-ingress.yaml
-│   │   └── hpa.yaml
-│   ├── level5-statefulset/     ← Level 5 (StatefulSet + RBAC)
-│   │   ├── configmap.yaml
-│   │   ├── secret.yaml
-│   │   ├── fastapi/
-│   │   ├── postgres/
-│   │   ├── rbac/
-│   │   └── helm/
-│   ├── level8-loki/            ← Level 8 (Loki logging)
-│   │   └── loki-values.yaml
-│   └── rbac/
-├── helm/
-│   └── fastapi/
-│       ├── Chart.yaml
-│       ├── values.yaml
-│       ├── values/
-│       └── templates/
-├── nginx/
-│   └── my-api.conf
-├── scripts/
-│   ├── setup.sh
-│   └── deploy.sh
-└── .github/workflows/
-    └── docker.yml
++-- app/                    # FastAPI application
+�   +-- main.py
+�   +-- requirements.txt
++-- docker/
+�   +-- Dockerfile
++-- compose/
+�   +-- app.yml
+�   +-- monitoring.yml
++-- monitoring/
+�   +-- prometheus/
+�   �   +-- prometheus.yml
+�   �   +-- alerts.yml
+�   +-- grafana/
+�   +-- alertmanager/
+�       +-- alertmanager.yml
++-- k8s/
+�   +-- level4-ingress-hpa/     ? Level 4 (Ingress + TLS + HPA)
+�   �   +-- cluster-issuer.yaml
+�   �   +-- fastapi-ingress-tls.yaml
+�   �   +-- monitoring-ingress.yaml
+�   �   +-- hpa.yaml
+�   +-- level5-statefulset/     ? Level 5 (StatefulSet + RBAC)
+�   �   +-- configmap.yaml
+�   �   +-- secret.yaml
+�   �   +-- fastapi/
+�   �   +-- postgres/
+�   �   +-- rbac/
+�   �   +-- helm/
+�   +-- level8-loki/            ? Level 8 (Loki logging)
+�   �   +-- loki-values.yaml
+�   +-- rbac/
++-- helm/
+�   +-- fastapi/
+�       +-- Chart.yaml
+�       +-- values.yaml
+�       +-- values/
+�       +-- templates/
++-- nginx/
+�   +-- my-api.conf
++-- scripts/
+�   +-- setup.sh
+�   +-- deploy.sh
++-- .github/workflows/
+    +-- docker.yml
 ```
 
 ---
@@ -154,38 +154,38 @@ Before getting started, ensure the following are installed:
 
 ## Learning Roadmap
 
-### ✅ Level 1 — Docker & CI/CD
+### ? Level 1 � Docker & CI/CD
 - FastAPI containerized with Docker
 - Docker Compose for multi-service stack
 - GitHub Actions CI/CD pipeline
 - Auto-deploy via self-hosted runner
 - Image pushed to GHCR
 
-### ✅ Level 2 — Kubernetes & Helm
+### ? Level 2 � Kubernetes & Helm
 - k3s single-node cluster setup
 - FastAPI deployed via Helm chart
 - ConfigMap & Secrets management
 - Service types: ClusterIP / NodePort
 
-### ✅ Level 3 — GitOps & Monitoring
+### ? Level 3 � GitOps & Monitoring
 - ArgoCD installed on k3s
 - Auto-sync from `helm/fastapi/` on main branch
 - Self-heal enabled
 - Prometheus + Grafana + Alertmanager stack
-- 5 alert rules → Discord notifications
+- 5 alert rules ? Discord notifications
 
-### ✅ Level 4 — Advanced Kubernetes
-- Nginx Ingress Controller — expose services via domain instead of NodePort
-- NetworkPolicy — pod-level firewall, restrict traffic to ingress-nginx namespace only
-- HPA — auto-scale FastAPI pods 1→5 replicas based on CPU utilization (50%)
+### ? Level 4 � Advanced Kubernetes
+- Nginx Ingress Controller � expose services via domain instead of NodePort
+- NetworkPolicy � pod-level firewall, restrict traffic to ingress-nginx namespace only
+- HPA � auto-scale FastAPI pods 1?5 replicas based on CPU utilization (50%)
 
-### ✅ Level 5 — StatefulSet, RBAC & Multi-env Helm
+### ? Level 5 � StatefulSet, RBAC & Multi-env Helm
 - PostgreSQL via StatefulSet + PersistentVolume (2Gi)
 - ConfigMap & Secret management for DB credentials
-- RBAC — namespace-scoped Role + RoleBinding for FastAPI service account
+- RBAC � namespace-scoped Role + RoleBinding for FastAPI service account
 - Helm multi-environment deploy (dev / prod) with separate values files
 
-### ✅ Level 6 — Ingress + TLS
+### ? Level 6 � Ingress + TLS
 - Nginx Ingress Controller + cert-manager for domain-based routing
 - Self-signed ClusterIssuer for HTTPS termination
 - Multi-service ingress (FastAPI, Grafana, Prometheus, Alertmanager)
@@ -197,9 +197,9 @@ Before getting started, ensure the following are installed:
 | prometheus.lab | Prometheus |
 | alertmanager.lab | Alertmanager |
 
-### ✅ Level 7 — HPA Stress Test
+### ? Level 7 � HPA Stress Test
 - Auto-scaling FastAPI pods based on CPU load
-- Stress test result: 199% CPU spike → scaled from 1 → 6 pods automatically
+- Stress test result: 199% CPU spike ? scaled from 1 ? 6 pods automatically
 
 | Setting | Value |
 |---------|-------|
@@ -207,7 +207,7 @@ Before getting started, ensure the following are installed:
 | Max Replicas | 10 |
 | Target CPU | 50% |
 
-### ✅ Level 8 — Loki Logging Stack
+### ? Level 8 � Loki Logging Stack
 - Loki-stack Classic (single binary) deployed in `monitoring` namespace
 - Promtail log collection from all pods
 - Grafana datasource integration
@@ -219,9 +219,9 @@ Before getting started, ensure the following are installed:
 Every push to `main` triggers:
 
 1. Build Docker image
-2. Push image → `ghcr.io/derbswag/devops-api:latest` + `:<git-sha>`
+2. Push image ? `ghcr.io/derbswag/devops-api:latest` + `:<git-sha>`
 3. Self-hosted runner deploys via Docker Compose
-4. ArgoCD detects Helm changes → sync to Kubernetes
+4. ArgoCD detects Helm changes ? sync to Kubernetes
 
 ---
 
@@ -253,7 +253,7 @@ cd Devops-fastapi-lab
 
 ```bash
 cp .env.example .env
-# Set DISCORD_WEBHOOK_URL in .env — never commit real values
+# Set DISCORD_WEBHOOK_URL in .env � never commit real values
 ```
 
 ### 3. Run Application (Docker)
@@ -338,7 +338,7 @@ helm upgrade --install loki-stack grafana/loki-stack \
 
 ---
 
-## Level 4 — Ingress, NetworkPolicy, HPA
+## Level 4 � Ingress, NetworkPolicy, HPA
 
 ### Ingress Controller
 
@@ -393,7 +393,7 @@ Alerts are sent to Discord via Alertmanager webhook (configured via `DISCORD_WEB
 ```
 URL:      http://localhost:3000
 Username: admin
-Password: admin  ← change this for any non-local environment
+Password: admin  ? change this for any non-local environment
 ```
 
 ---
@@ -401,11 +401,11 @@ Password: admin  ← change this for any non-local environment
 ## Security Notes
 
 - Discord webhook URL is loaded from environment variable, never hardcoded
-- Kubernetes secrets are created via `kubectl create secret` — template files use placeholder values only
+- Kubernetes secrets are created via `kubectl create secret` � template files use placeholder values only
 - Real secret files (`*secret-real.yaml`, `*.env`) are excluded via `.gitignore`
 
 ---
 
 ## License
 
-MIT License# CI/CD test trigger 2026-05-05 14:34
+MIT License
