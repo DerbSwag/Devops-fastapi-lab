@@ -38,8 +38,9 @@ DB_USER = os.getenv("DB_USER", "postgres")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "postgres")
 DB_SSLMODE = os.getenv("DB_SSLMODE", "prefer")
 
-DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?sslmode={DB_SSLMODE}"
-engine = create_async_engine(DATABASE_URL, pool_size=5, max_overflow=5)
+DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+_connect_args = {} if DB_SSLMODE == "disable" else {"ssl": DB_SSLMODE}
+engine = create_async_engine(DATABASE_URL, pool_size=5, max_overflow=5, connect_args=_connect_args)
 async_session = async_sessionmaker(engine, expire_on_commit=False)
 
 
