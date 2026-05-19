@@ -14,9 +14,23 @@ serviceAccount:
 
 podAnnotations:
   linkerd.io/inject: enabled
+  config.linkerd.io/skip-outbound-ports: "5432"
 podLabels: {}
 podSecurityContext: {}
 securityContext: {}
+
+config:
+  APP_ENV: production
+  APP_VERSION: "3.0"
+  DB_HOST: postgres-0.postgres-service.level5.svc.cluster.local
+  DB_PORT: "5432"
+  DB_NAME: appdb
+  DB_SSLMODE: disable
+  LOG_LEVEL: info
+
+secret:
+  DB_PASSWORD: devpassword123
+  API_KEY: my-super-secret-key-123
 
 service:
   type: ClusterIP
