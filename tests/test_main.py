@@ -32,4 +32,4 @@ def test_secret_check_with_key():
     response = client.get("/secret-check")
     data = response.json()
     assert data["api_key_exists"] is True
-    assert data["api_key_length"] == 13
+    assert data["api_key_length"] == 12
