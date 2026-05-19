@@ -150,6 +150,24 @@ Alerts → Discord via Alertmanager webhook (`DISCORD_WEBHOOK_URL` env var).
 
 ---
 
+## Screenshots
+
+| ArgoCD GitOps | Grafana Dashboard |
+|:---:|:---:|
+| ![ArgoCD](docs/screenshots/argocd-sync.png) | ![Grafana](docs/screenshots/grafana-cluster-dashboard.png) |
+
+| Zabbix Monitoring (14 hosts) | Proxmox Cluster |
+|:---:|:---:|
+| ![Zabbix](docs/screenshots/zabbix-dashboard.png) | ![Proxmox](docs/screenshots/proxmox-cluster.png) |
+
+| Alertmanager → Lark |
+|:---:|
+| ![Lark Alert](docs/screenshots/lark-alertmanager.png) |
+
+---
+
+
+
 ## Documentation
 
 | Doc | Description |
