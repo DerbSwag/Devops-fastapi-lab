@@ -141,9 +141,32 @@ secret:
 
 ---
 
+## Follow-up Actions (2026-05-19 evening)
+
+หลังจาก permanent fix เสร็จ ได้ดำเนินการเพิ่มเติม:
+
+### 1. Pod Readiness Alert Rule ✅
+สร้าง `PrometheusRule` ใน monitoring namespace — fire alert เมื่อ pod Running แต่ไม่ Ready > 5 นาที → ส่ง notification ไป Discord/Lark
+
+**File:** `monitoring/prometheus/pod-readiness-alert.yml`
+
+### 2. Level 10 — Jenkins on K8s ✅
+- Deploy Jenkins via Helm ใน `jenkins` namespace
+- Kubernetes cloud agent configured (dynamic pods)
+- Pipeline test: clone repo → install deps → test import → SUCCESS (Build #7, 1m14s)
+- Access: `http://192.168.141.129:32080`
+
+### 3. Level 17 — Velero Backup ✅
+- MinIO deployed as S3-compatible storage
+- Velero installed with node-agent
+- First backup: 727 items
+- Daily schedule: 02:00 (default, monitoring, level5 namespaces)
+
+---
+
 ## Prevention
 
 - [x] ~~เพิ่ม CI test ที่ validate DB connection string format~~ → แก้ด้วย `quote_plus()` ใน code
 - [x] ~~ใช้ Sealed Secrets หรือ External Secrets Operator~~ → ย้าย secret เข้า Helm chart (managed by ArgoCD)
 - [ ] พิจารณาย้าย PostgreSQL มาอยู่ใน default namespace หรือใช้ ClusterIP service แทน headless
-- [ ] เพิ่ม alerting rule สำหรับ pod readiness failure > 5 minutes
+- [x] ~~เพิ่ม alerting rule สำหรับ pod readiness failure > 5 minutes~~ → `PrometheusRule` deployed
