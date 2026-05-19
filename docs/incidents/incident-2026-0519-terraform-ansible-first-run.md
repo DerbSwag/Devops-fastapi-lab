@@ -51,11 +51,40 @@ First time running Terraform and Ansible on actual infrastructure. Multiple issu
 - **Cause:** Playbook uses `sshd` but Ubuntu 24.04 service is named `ssh`
 - **Impact:** Non-critical — hardening rules applied, just restart skipped
 
+## Terraform Apply & Destroy
+
+### Issue 5: GHCR image pull denied on EC2
+- **Problem:** user_data deploys `ghcr.io/derbswag/devops-fastapi-lab:latest` but image is private
+- **Fix:** Replaced with public image (`kennethreitz/httpbin`) for demo
+- **Lesson:** Either make GHCR package public or add docker login to user_data
+
+### Issue 6: `tiangolo/uvicorn-gunicorn-fastapi` returns 502
+- **Problem:** Container starts but no app code inside — returns empty response
+- **Cause:** Base image needs app code mounted/copied in
+- **Fix:** Used `kennethreitz/httpbin` which works standalone
+
+### Successful Deploy
+```
+terraform apply → 7 resources created in <1 min
+- VPC + Subnet + IGW + Route Table
+- Security Group (SSH + HTTP + 8000)
+- EC2 t3.micro (Docker + app via user_data)
+- App accessible at http://<public-ip>:8000 ✅
+```
+
+### Destroy
+```
+terraform destroy → 7 resources destroyed in <30s
+- No leftover resources, no ongoing cost
+```
+
 ## Results
 
 | Component | Status |
 |-----------|--------|
-| Terraform plan | ✅ 6 resources planned |
+| Terraform plan | ✅ 7 resources planned |
+| Terraform apply | ✅ 7 resources created, app accessible |
+| Terraform destroy | ✅ 7 resources destroyed, no cost |
 | Ansible ping (6 nodes) | ✅ All reachable |
 | setup-docker.yml | ✅ Success (3 nodes) |
 | deploy-fastapi.yml | ⚠️ Partial (registry auth needed) |
