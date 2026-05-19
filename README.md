@@ -164,6 +164,12 @@ Alerts → Discord via Alertmanager webhook (`DISCORD_WEBHOOK_URL` env var).
 |:---:|:---:|
 | ![Zabbix](docs/screenshots/zabbix-dashboard.png) | ![Proxmox](docs/screenshots/proxmox-cluster.png) |
 
+
+| Proxmox Summary | Proxmox VMs |
+|:---:|:---:|
+| ![Proxmox Summary](docs/screenshots/proxmox-summary.png) | ![Proxmox VMs](docs/screenshots/proxmox-vms.png) |
+
+
 | Alertmanager → Lark |
 |:---:|
 | ![Lark Alert](docs/screenshots/lark-alertmanager.png) |
