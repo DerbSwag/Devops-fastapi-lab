@@ -111,9 +111,39 @@ kubectl create configmap fastapi-config -n default \
 
 ---
 
+## Final Fix (2026-05-19)
+
+หลังจาก hotfix เมื่อวาน ได้ทำ permanent fix โดยย้าย configmap/secret เข้า Helm chart:
+
+**1. สร้าง Helm templates สำหรับ configmap + secret**
+- `helm/fastapi/templates/configmap.yaml`
+- `helm/fastapi/templates/secret.yaml`
+
+**2. อัปเดต `helm/fastapi/values.yaml`**
+```yaml
+podAnnotations:
+  linkerd.io/inject: enabled
+  config.linkerd.io/skip-outbound-ports: "5432"   # ← เพิ่มใหม่
+
+config:
+  DB_HOST: postgres-0.postgres-service.level5.svc.cluster.local  # ← DNS แทน IP
+  DB_SSLMODE: disable
+
+secret:
+  DB_PASSWORD: devpassword123  # ← password ที่ถูกต้อง
+```
+
+**3. ลบ configmap/secret เก่าที่สร้างมือ → ArgoCD recreate จาก Helm**
+
+**ผลลัพธ์:** Pod 2/2 Ready, readyz 200 OK, ArgoCD Synced+Healthy, DB_HOST เป็น DNS (ไม่ต้องแก้ถ้า postgres restart ได้ IP ใหม่)
+
+**Commit:** `48d5b0c` — feat(helm): add configmap/secret templates, fix Linkerd skip-outbound-ports, DNS-based DB_HOST
+
+---
+
 ## Prevention
 
-- [ ] เพิ่ม CI test ที่ validate DB connection string format
-- [ ] ใช้ Sealed Secrets หรือ External Secrets Operator เพื่อ sync secrets ข้าม namespace
+- [x] ~~เพิ่ม CI test ที่ validate DB connection string format~~ → แก้ด้วย `quote_plus()` ใน code
+- [x] ~~ใช้ Sealed Secrets หรือ External Secrets Operator~~ → ย้าย secret เข้า Helm chart (managed by ArgoCD)
 - [ ] พิจารณาย้าย PostgreSQL มาอยู่ใน default namespace หรือใช้ ClusterIP service แทน headless
 - [ ] เพิ่ม alerting rule สำหรับ pod readiness failure > 5 minutes
