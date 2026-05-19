@@ -156,6 +156,10 @@ Alerts → Discord via Alertmanager webhook (`DISCORD_WEBHOOK_URL` env var).
 |:---:|:---:|
 | ![ArgoCD](docs/screenshots/argocd-sync.png) | ![Grafana](docs/screenshots/grafana-cluster-dashboard.png) |
 
+| Discord Alert | HPA Auto-scaling |
+|:---:|:---:|
+| ![Discord](docs/screenshots/discord-alert.png) | ![HPA](docs/screenshots/hpa-scaling.png) |
+
 | Zabbix Monitoring (14 hosts) | Proxmox Cluster |
 |:---:|:---:|
 | ![Zabbix](docs/screenshots/zabbix-dashboard.png) | ![Proxmox](docs/screenshots/proxmox-cluster.png) |
