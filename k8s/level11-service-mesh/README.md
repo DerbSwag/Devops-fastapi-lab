@@ -1,119 +1,67 @@
 # Level 11 — Service Mesh (Linkerd)
 
-Lightweight service mesh on k3s — mTLS, traffic observability, and reliability features.
+## ⚠️ Status: ATTEMPTED — Not Compatible with Current Setup (2026-05-21)
 
-> Using **Linkerd** over Istio because it's lighter (~200MB RAM vs ~2GB) and better suited for k3s.
+## Incident: Linkerd Proxy Bootstrap Failure on k3s
 
-## Architecture
+### Problem
+Linkerd control plane pods (destination, proxy-injector) fail to start because the proxy sidecar cannot obtain identity certificates during bootstrap.
 
+### Root Cause
+Circular dependency:
+1. Proxy sidecar needs identity certificate from `linkerd-identity` service
+2. To reach `linkerd-identity`, proxy needs DNS resolution
+3. Linkerd's init container redirects ALL traffic (including DNS) through the proxy
+4. Proxy can't start without identity → DNS fails → identity unreachable → deadlock
+
+### Attempted Fixes
+| Fix | Result |
+|-----|--------|
+| `--set proxyInit.ignoreOutboundPorts=53` | identity + proxy-injector came up, destination still failed |
+| `--set proxy.nativeSidecar=false` | Same result |
+| Linkerd edge (26.5.2) | Failed |
+| Linkerd stable (2.14.10) | Same failure |
+
+### Environment
+- k3s v1.31 (single control plane, 3 nodes)
+- CoreDNS as cluster DNS
+- NetworkPolicy active (but linkerd namespace has no policies)
+
+### Conclusion
+Linkerd's proxy-in-control-plane architecture has a bootstrap problem on k3s where DNS resolution timing is critical. This is a known issue in resource-constrained environments.
+
+### Alternative Options (Future)
+1. **Istio ambient mode** — no sidecar, uses ztunnel (node-level proxy)
+2. **Cilium service mesh** — eBPF-based, no sidecar needed
+3. **Linkerd with HA mode** on larger cluster (more RAM/nodes)
+
+### Lessons Learned
+1. Service mesh adds complexity — not always worth it for small clusters
+2. Proxy sidecar in control plane creates circular dependency
+3. Always check compatibility matrix before installing
+4. Document failures — they show real debugging experience
+
+---
+
+## Original Plan (for reference)
+
+### Architecture
 ```
 ┌─── k3s Cluster with Linkerd ────────────────────────────┐
+│  Linkerd Control Plane                                    │
+│  ├── destination (service discovery)                      │
+│  ├── identity (mTLS certificate authority)                │
+│  └── proxy-injector (sidecar injection)                   │
 │                                                           │
-│  ┌──────────────────────────────────────────────┐        │
-│  │ Linkerd Control Plane                         │        │
-│  │  ├── destination (service discovery)          │        │
-│  │  ├── identity (mTLS certificate authority)    │        │
-│  │  └── proxy-injector (sidecar injection)       │        │
-│  └──────────────────────────────────────────────┘        │
-│                                                           │
-│  ┌─────────┐  mTLS   ┌─────────┐  mTLS   ┌─────────┐  │
-│  │ FastAPI │◄───────►│ Postgres│◄───────►│ Redis   │  │
-│  │ + proxy │         │ + proxy │         │ + proxy │  │
-│  └─────────┘         └─────────┘         └─────────┘  │
-│                                                           │
-│  ┌──────────────────────────────────────────────┐        │
-│  │ Linkerd Viz (Dashboard)                       │        │
-│  │  - Live traffic topology                      │        │
-│  │  - Per-route success rate & latency           │        │
-│  │  - TCP connections & bytes                    │        │
-│  └──────────────────────────────────────────────┘        │
-│                                                           │
+│  ┌─────────┐  mTLS   ┌─────────┐                        │
+│  │ FastAPI │◄───────►│ Postgres│                        │
+│  │ + proxy │         │ + proxy │                        │
+│  └─────────┘         └─────────┘                        │
 └───────────────────────────────────────────────────────────┘
 ```
 
-## What Service Mesh Gives You
-
-| Feature | Without Mesh | With Linkerd |
-|---------|-------------|--------------|
-| Encryption | Plain HTTP between pods | **mTLS everywhere** (auto) |
-| Observability | Need custom metrics | **Golden metrics** (latency, success rate, RPS) |
-| Retries | App must implement | **Automatic retries** on failure |
-| Traffic split | Manual deployment | **Canary deploys** (90/10 traffic split) |
-| Auth | NetworkPolicy only | **Service-to-service identity** |
-
-## Setup
-
-```bash
-# 1. Install Linkerd CLI
-curl -sL https://run.linkerd.io/install | sh
-export PATH=$HOME/.linkerd2/bin:$PATH
-
-# 2. Pre-check
-linkerd check --pre
-
-# 3. Install control plane
-linkerd install --crds | kubectl apply -f -
-linkerd install | kubectl apply -f -
-
-# 4. Verify
-linkerd check
-
-# 5. Install Viz dashboard
-linkerd viz install | kubectl apply -f -
-
-# 6. Inject sidecar to FastAPI namespace
-kubectl get deploy -n default -o yaml | linkerd inject - | kubectl apply -f -
-
-# 7. Access dashboard
-linkerd viz dashboard
-```
-
-## Mesh FastAPI deployment
-
-```yaml
-# Add annotation to enable sidecar injection
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: fastapi
-  annotations:
-    linkerd.io/inject: enabled
-spec:
-  template:
-    metadata:
-      annotations:
-        linkerd.io/inject: enabled
-```
-
-## Traffic Split (Canary Deploy)
-
-```yaml
-apiVersion: split.smi-spec.io/v1alpha1
-kind: TrafficSplit
-metadata:
-  name: fastapi-canary
-spec:
-  service: fastapi
-  backends:
-  - service: fastapi-stable
-    weight: 900m    # 90%
-  - service: fastapi-canary
-    weight: 100m    # 10%
-```
-
-## Resource Requirements
-
-| Component | RAM |
-|-----------|-----|
-| Control plane | ~200MB |
-| Per-pod proxy sidecar | ~20MB |
-| Viz dashboard | ~100MB |
-| **Total** | **~350MB** |
-
-## Files
-
-| File | Purpose |
-|------|---------|
-| `linkerd-inject-annotation.yaml` | Annotation patch for existing deployments |
-| `traffic-split.yaml` | Canary deploy example |
-| `README.md` | This file |
+### What Service Mesh Would Give
+- mTLS between all pods (automatic)
+- Golden metrics (latency, success rate, RPS)
+- Traffic splitting for canary deploys
+- Service-to-service identity
