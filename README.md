@@ -3,7 +3,30 @@
 [![CI/CD](https://github.com/DerbSwag/Devops-fastapi-lab/actions/workflows/docker.yml/badge.svg)](https://github.com/DerbSwag/Devops-fastapi-lab/actions/workflows/docker.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Production-style DevOps lab using FastAPI, Docker, Kubernetes (k3s), ArgoCD GitOps, and full observability stack.
+Production-style **home lab and portfolio project** using FastAPI, Docker, Kubernetes (k3s), ArgoCD GitOps, and a full observability stack.
+
+This repository documents an end-to-end DevOps learning environment: application delivery, container builds, GitOps deployment, Kubernetes operations, monitoring, logging, alerting, and incident-style documentation.
+
+## Home Lab Scope
+
+This project is a personal DevOps home lab designed to simulate real production workflows in a controlled environment. Some defaults are intentionally simplified for learning, demos, and local infrastructure constraints:
+
+- Demo/local values may use lab-only domains such as `fastapi.local`.
+- Some manifests include placeholder or demo credentials for reproducible exercises.
+- Local Docker Compose deployments may use the `latest` image tag for convenience.
+- TLS, ingress, alerting, and secret management examples are intended to show implementation patterns, not turnkey production policy.
+
+For production use, replace lab shortcuts with hardened controls such as external secret management, immutable image tags, policy enforcement, stricter CI gates, and environment-specific security baselines.
+
+---
+
+## Portfolio Highlights
+
+- Built a full CI/CD path from GitHub Actions to GHCR and local/home-lab deployment.
+- Deployed FastAPI to Kubernetes with Helm and GitOps workflows.
+- Practiced progressive Kubernetes operations: ingress, HPA, StatefulSet, RBAC, TLS, service mesh, policy, backup, and chaos engineering topics.
+- Integrated observability with Prometheus, Grafana, Loki, Alertmanager, Discord/Lark notifications, and dashboard evidence.
+- Documented operational learning through runbooks, incident notes, screenshots, and a level-based roadmap.
 
 ## Quick Start
 
@@ -192,6 +215,52 @@ Alerts → Discord via Alertmanager webhook (`DISCORD_WEBHOOK_URL` env var).
 - Secrets loaded from environment variables, never hardcoded
 - K8s secrets created via `kubectl create secret` — templates use placeholders only
 - Real secret files (`*secret-real.yaml`, `*.env`) excluded via `.gitignore`
+
+> Note: values committed for lab reproducibility must be treated as demo-only. Do not store real production credentials in Git.
+
+---
+
+## Production Hardening Checklist
+
+Use this checklist when promoting the lab patterns toward a real production environment.
+
+### Secrets & Configuration
+
+- [ ] Replace demo secrets with External Secrets Operator, SOPS, SealedSecrets, Vault, or a cloud secret manager.
+- [ ] Remove all real credentials from Git history and rotate anything that was ever committed.
+- [ ] Split default, development, staging, and production values clearly.
+- [ ] Validate required environment variables at application startup.
+
+### CI/CD & Supply Chain
+
+- [ ] Run unit tests and lint checks before building container images.
+- [ ] Fail the pipeline on critical/high vulnerability findings where appropriate.
+- [ ] Deploy immutable image tags or digests instead of relying on `latest`.
+- [ ] Generate SBOMs and keep image scan results as build artifacts.
+- [ ] Add branch/environment protection for production deployments.
+
+### Container & Kubernetes Runtime
+
+- [ ] Run containers as non-root users.
+- [ ] Set `runAsNonRoot`, `allowPrivilegeEscalation: false`, dropped Linux capabilities, and read-only root filesystems where possible.
+- [ ] Add NetworkPolicies for application, database, ingress, and monitoring traffic.
+- [ ] Add PodDisruptionBudgets for workloads that need high availability.
+- [ ] Move HPA configuration into Helm values for consistent environment promotion.
+
+### Observability & Reliability
+
+- [ ] Expose application metrics and scrape them with Prometheus.
+- [ ] Alert on user-impacting symptoms such as 5xx rate, latency, readiness failures, and unavailable replicas.
+- [ ] Define basic SLOs for availability and latency.
+- [ ] Add dashboard panels for request rate, error rate, latency, pod restarts, and DB connectivity.
+- [ ] Keep runbooks linked from alerts.
+
+### Backup, Recovery & Operations
+
+- [ ] Test restore procedures for stateful services, not only backup creation.
+- [ ] Document rollback steps for Docker Compose, Helm, and ArgoCD paths.
+- [ ] Add disaster-recovery notes for node loss, registry outage, and database failure.
+- [ ] Periodically review resource requests, limits, and capacity headroom.
 
 ---
 
