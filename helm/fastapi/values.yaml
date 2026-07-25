@@ -20,7 +20,7 @@ podSecurityContext: {}
 securityContext: {}
 
 config:
-  APP_ENV: production
+  APP_ENV: home-lab
   APP_VERSION: "3.0"
   DB_HOST: postgres-0.postgres-service.level5.svc.cluster.local
   DB_PORT: "5432"
@@ -29,8 +29,10 @@ config:
   LOG_LEVEL: info
 
 secret:
-  DB_PASSWORD: devpassword123
-  API_KEY: my-super-secret-key-123
+  # Home lab placeholders only. Override with a private values file,
+  # --set, ExternalSecret, SealedSecret, or CI/CD secret injection.
+  DB_PASSWORD: CHANGE_ME
+  API_KEY: CHANGE_ME
 
 service:
   type: ClusterIP

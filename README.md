@@ -1,9 +1,11 @@
-# DevOps FastAPI Lab 🚀
+# DevOps FastAPI Home Lab
 
 [![CI/CD](https://github.com/DerbSwag/Devops-fastapi-lab/actions/workflows/docker.yml/badge.svg)](https://github.com/DerbSwag/Devops-fastapi-lab/actions/workflows/docker.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Production-style DevOps lab using FastAPI, Docker, Kubernetes (k3s), ArgoCD GitOps, and full observability stack.
+This repository is a home lab project for practicing application delivery with FastAPI, Docker, Kubernetes, Helm, GitHub Actions, GitOps, monitoring, and incident documentation.
+
+It is designed as a learning and portfolio repository, not a production system.
 
 ## Quick Start
 
@@ -15,6 +17,20 @@ docker compose -f compose/app.yml up -d
 ```
 
 > For full Kubernetes deployment, see [docs/getting-started.md](docs/getting-started.md)
+
+---
+
+## What This Lab Demonstrates
+
+- FastAPI application development and health endpoints
+- Docker image build and Docker Compose runtime
+- GitHub Actions CI/CD with GHCR image publishing
+- Container vulnerability scanning with Trivy
+- Kubernetes manifests, Services, Ingress, probes, and HPA
+- Helm chart packaging for repeatable deployments
+- ArgoCD GitOps sync and self-healing workflow
+- Prometheus, Grafana, Loki, and Alertmanager observability
+- Backup notes, incident docs, and progressive learning levels
 
 ---
 
@@ -189,8 +205,8 @@ Alerts → Discord via Alertmanager webhook (`DISCORD_WEBHOOK_URL` env var).
 
 ## Security Notes
 
-- Secrets loaded from environment variables, never hardcoded
-- K8s secrets created via `kubectl create secret` — templates use placeholders only
+- Secrets loaded from environment variables, CI/CD secrets, or local override values, never hardcoded
+- K8s secrets created via `kubectl create secret` or Helm override files; committed templates use placeholders only
 - Real secret files (`*secret-real.yaml`, `*.env`) excluded via `.gitignore`
 
 ---

@@ -1,0 +1,13 @@
+# Example override values for local home-lab deployments.
+# Copy to a private file such as values.local.yaml and do not commit real secrets.
+
+config:
+  APP_ENV: home-lab
+  DB_HOST: postgres-0.postgres-service.level5.svc.cluster.local
+  DB_PORT: "5432"
+  DB_NAME: appdb
+  DB_SSLMODE: disable
+
+secret:
+  DB_PASSWORD: replace-with-local-password
+  API_KEY: replace-with-local-api-key
