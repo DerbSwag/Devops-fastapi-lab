@@ -121,16 +121,16 @@ Detailed level-by-level walkthrough: [docs/roadmap.md](docs/roadmap.md)
 
 ```text
 .
-├── app/                    # FastAPI application
-├── compose/                # Docker Compose files
-├── docker/                 # Dockerfile
-├── helm/fastapi/           # Helm chart
-├── k8s/                    # Kubernetes manifests by level
-├── monitoring/             # Prometheus, Grafana, Alertmanager configs
-├── nginx/                  # Reverse proxy config
-├── scripts/                # Setup and deploy scripts
-├── tests/                  # Application tests
-└── .github/workflows/      # CI/CD pipelines
+|-- app/                    # FastAPI application
+|-- compose/                # Docker Compose files
+|-- docker/                 # Dockerfile
+|-- helm/fastapi/           # Helm chart
+|-- k8s/                    # Kubernetes manifests by level
+|-- monitoring/             # Prometheus, Grafana, Alertmanager configs
+|-- nginx/                  # Reverse proxy config
+|-- scripts/                # Setup and deploy scripts
+|-- tests/                  # Application tests
+`-- .github/workflows/      # CI/CD pipelines
 ```
 
 ---
